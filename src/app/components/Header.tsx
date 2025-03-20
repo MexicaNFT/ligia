@@ -36,7 +36,7 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-gray-300">
+              <Link href="essays" className="hover:text-gray-300">
                 Ensayos
               </Link>
             </li>
@@ -79,7 +79,7 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-gray-300">
+              <Link href="essays" className="hover:text-gray-300">
                 Ensayos
               </Link>
             </li>
