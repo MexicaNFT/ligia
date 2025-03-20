@@ -1,13 +1,15 @@
 import HeroSection from "./components/HeroSection";
 import UserFeedback from "./components/UserFeedback";
 import RecentBlogs from "./components/RecentBlogs";
+import AboutAuthor from "./components/AboutAuthor";
 
 export default function Home() {
   return (
     <main className="relative">
       <HeroSection />
-      <UserFeedback />
-      <RecentBlogs />
+      <AboutAuthor />
+      {/* <UserFeedback />
+      <RecentBlogs /> */}
     </main>
   );
 }
