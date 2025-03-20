@@ -21,7 +21,7 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-gray-300">
+              <Link href="novel" className="hover:text-gray-300">
                 Novelas
               </Link>
             </li>
@@ -64,7 +64,7 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-gray-300">
+              <Link href="novel" className="hover:text-gray-300">
                 Novelas
               </Link>
             </li>
