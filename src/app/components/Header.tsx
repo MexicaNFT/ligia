@@ -12,17 +12,37 @@ export default function Header() {
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="text-xl font-bold hover:text-gray-300">
           Ligia Urroz
-        </Link>{" "}
+        </Link>
         <nav className="hidden md:block">
           <ul className="flex space-x-4">
             <li>
               <Link href="#" className="hover:text-gray-300">
-                Home
+                Acerca del Autor
               </Link>
             </li>
             <li>
               <Link href="#" className="hover:text-gray-300">
-                About
+                Novelas
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-gray-300">
+                Cuento
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-gray-300">
+                Crónicas
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-gray-300">
+                Ensayos
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-gray-300">
+                Publicaciones Varias
               </Link>
             </li>
           </ul>
@@ -39,18 +59,33 @@ export default function Header() {
         <nav className="md:hidden">
           <ul className="flex flex-col items-center space-y-4 py-4">
             <li>
-              <Link href="/" className="hover:text-gray-300">
-                Home
+              <Link href="#" className="hover:text-gray-300">
+                Acerca del Autor
               </Link>
             </li>
             <li>
-              <Link href="/about" className="hover:text-gray-300">
-                About
+              <Link href="#" className="hover:text-gray-300">
+                Novelas
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:text-gray-300">
-                Contact
+              <Link href="#" className="hover:text-gray-300">
+                Cuento
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-gray-300">
+                Crónicas
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-gray-300">
+                Ensayos
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="hover:text-gray-300">
+                Publicaciones Varias
               </Link>
             </li>
           </ul>
