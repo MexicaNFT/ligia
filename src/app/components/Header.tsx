@@ -16,9 +16,20 @@ export default function Header() {
         <nav className="hidden md:block">
           <ul className="flex space-x-4">
             <li>
-              <Link href="#" className="hover:text-gray-300">
+              <a
+                href="#about-author"
+                className="hover:text-gray-300 cursor-pointer"
+                onClick={(e) => {
+                  if (window.location.pathname === "/") {
+                    e.preventDefault();
+                    document
+                      .getElementById("about-author")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+              >
                 Acerca del Autor
-              </Link>
+              </a>
             </li>
             <li>
               <Link href="novel" className="hover:text-gray-300">
@@ -59,9 +70,21 @@ export default function Header() {
         <nav className="md:hidden">
           <ul className="flex flex-col items-center space-y-4 py-4">
             <li>
-              <Link href="#" className="hover:text-gray-300">
+              <a
+                href="#about-author"
+                className="hover:text-gray-300 cursor-pointer"
+                onClick={(e) => {
+                  if (window.location.pathname === "/") {
+                    e.preventDefault();
+                    document
+                      .getElementById("about-author")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                    setIsMenuOpen(false);
+                  }
+                }}
+              >
                 Acerca del Autor
-              </Link>
+              </a>
             </li>
             <li>
               <Link href="novel" className="hover:text-gray-300">

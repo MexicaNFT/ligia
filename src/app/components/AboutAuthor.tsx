@@ -2,15 +2,12 @@ import { Sparkle } from "lucide-react";
 
 export default function AboutAuthor() {
   return (
-    <section className="bg-white py-20 px-6">
-      {/* Section Heading */}
+    <section id="about-author" className="bg-white py-20 px-6">
       <h2 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-[#7B7DCD] to-[#B987C4] text-transparent bg-clip-text mb-12">
         Acerca del Autor
       </h2>
 
-      {/* Content Wrapper */}
       <div className="max-w-4xl mx-auto space-y-10">
-        {/* Section 1 */}
         <div className="flex items-start space-x-2">
           <Sparkle
             className="w-4 h-4 text-black flex-shrink-0 mt-2"
@@ -35,7 +32,6 @@ export default function AboutAuthor() {
           </div>
         </div>
 
-        {/* Section 2 */}
         <div className="flex items-start space-x-2">
           <Sparkle
             className="w-4 h-4 text-black flex-shrink-0 mt-2"
@@ -72,7 +68,6 @@ export default function AboutAuthor() {
           </div>
         </div>
 
-        {/* Section 3 */}
         <div className="flex items-start space-x-2">
           <Sparkle
             className="w-4 h-4 text-black flex-shrink-0 mt-2"
@@ -92,7 +87,6 @@ export default function AboutAuthor() {
           </div>
         </div>
 
-        {/* Section 4 */}
         <div className="flex items-start space-x-2">
           <Sparkle
             className="w-4 h-4 text-black flex-shrink-0 mt-2"
