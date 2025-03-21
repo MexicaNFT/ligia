@@ -8,8 +8,8 @@ export default function Ensayos() {
         <Image
           src="/image03.png"
           alt="Ensayo"
-          layout="fill"
-          objectFit="fill"
+          fill
+          style={{ objectFit: "fill" }}
           className="rounded-lg"
         />
       </div>
@@ -34,8 +34,8 @@ export default function Ensayos() {
             <Image
               src="/image04.png"
               alt="Author"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: "cover" }}
               className="rounded-lg"
             />
           </div>
