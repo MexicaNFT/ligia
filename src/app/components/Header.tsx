@@ -2,10 +2,31 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+
+  const handleScrollToAuthor = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    if (window.location.pathname !== "/") {
+      router.push("/");
+      setTimeout(() => {
+        document
+          .getElementById("about-author")
+          ?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      document
+        .getElementById("about-author")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+
+    setIsMenuOpen(false); // Close mobile menu if open
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-[#131415] text-white p-4 z-50">
@@ -19,35 +40,28 @@ export default function Header() {
               <a
                 href="#about-author"
                 className="hover:text-gray-300 cursor-pointer"
-                onClick={(e) => {
-                  if (window.location.pathname === "/") {
-                    e.preventDefault();
-                    document
-                      .getElementById("about-author")
-                      ?.scrollIntoView({ behavior: "smooth" });
-                  }
-                }}
+                onClick={handleScrollToAuthor}
               >
                 Acerca del Autor
               </a>
             </li>
             <li>
-              <Link href="novel" className="hover:text-gray-300">
+              <Link href="/novel" className="hover:text-gray-300">
                 Novelas
               </Link>
             </li>
             <li>
-              <Link href="tale" className="hover:text-gray-300">
+              <Link href="/tale" className="hover:text-gray-300">
                 Cuento
               </Link>
             </li>
             <li>
-              <Link href="chronicle" className="hover:text-gray-300">
+              <Link href="/chronicle" className="hover:text-gray-300">
                 Crónicas
               </Link>
             </li>
             <li>
-              <Link href="essays" className="hover:text-gray-300">
+              <Link href="/essays" className="hover:text-gray-300">
                 Ensayos
               </Link>
             </li>
@@ -73,36 +87,28 @@ export default function Header() {
               <a
                 href="#about-author"
                 className="hover:text-gray-300 cursor-pointer"
-                onClick={(e) => {
-                  if (window.location.pathname === "/") {
-                    e.preventDefault();
-                    document
-                      .getElementById("about-author")
-                      ?.scrollIntoView({ behavior: "smooth" });
-                    setIsMenuOpen(false);
-                  }
-                }}
+                onClick={handleScrollToAuthor}
               >
                 Acerca del Autor
               </a>
             </li>
             <li>
-              <Link href="novel" className="hover:text-gray-300">
+              <Link href="/novel" className="hover:text-gray-300">
                 Novelas
               </Link>
             </li>
             <li>
-              <Link href="tale" className="hover:text-gray-300">
+              <Link href="/tale" className="hover:text-gray-300">
                 Cuento
               </Link>
             </li>
             <li>
-              <Link href="chronicle" className="hover:text-gray-300">
+              <Link href="/chronicle" className="hover:text-gray-300">
                 Crónicas
               </Link>
             </li>
             <li>
-              <Link href="essays" className="hover:text-gray-300">
+              <Link href="/essays" className="hover:text-gray-300">
                 Ensayos
               </Link>
             </li>
