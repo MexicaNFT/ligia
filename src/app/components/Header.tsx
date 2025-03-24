@@ -65,11 +65,11 @@ export default function Header() {
                 Ensayos
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="#" className="hover:text-gray-300">
                 Publicaciones Varias
               </Link>
-            </li>
+            </li> */}
           </ul>
         </nav>
         <button
@@ -112,11 +112,11 @@ export default function Header() {
                 Ensayos
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="#" className="hover:text-gray-300">
                 Publicaciones Varias
               </Link>
-            </li>
+            </li> */}
           </ul>
         </nav>
       )}
