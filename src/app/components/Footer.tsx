@@ -12,26 +12,20 @@ export default function Footer() {
               Reading promoter and author.
             </p>
             <div className="flex gap-4 mb-4">
-              <Link href="https://facebook.com" target="_blank">
+              <Link href="https://www.facebook.com/Ligiaurrozescritora" target="_blank">
                 <Facebook
                   size={40}
                   className="text-black bg-white rounded-full p-2"
                 />
               </Link>
-              <Link href="https://twitter.com" target="_blank">
+              <Link href="https://x.com/ligiaurroz" target="_blank">
                 <Twitter
                   size={40}
                   className="text-black bg-white rounded-full p-2"
                 />
               </Link>
-              <Link href="https://instagram.com" target="_blank">
+              <Link href="https://www.instagram.com/ligiaurroz" target="_blank">
                 <Instagram
-                  size={40}
-                  className="text-black bg-white rounded-full p-2"
-                />
-              </Link>
-              <Link href="https://linkedin.com" target="_blank">
-                <Linkedin
                   size={40}
                   className="text-black bg-white rounded-full p-2"
                 />
