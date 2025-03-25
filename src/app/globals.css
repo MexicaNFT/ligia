@@ -2,53 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
+  font-family: "Playfair Display", serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-/* Add this to ensure the AboutBox is positioned correctly */
-main {
-  overflow-x: hidden;
-}
-
-/* Smooth scrolling for the entire page */
 html {
   scroll-behavior: smooth;
-}
-
-/* Responsive font sizes */
-@media (max-width: 640px) {
-  h1 {
-    font-size: 2rem;
-  }
-  h2 {
-    font-size: 1.5rem;
-  }
-}
-
-/* Ensure images don't overflow their containers */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Smooth transitions for interactive elements */
-a,
-button {
-  transition: all 0.3s ease;
 }
