@@ -34,7 +34,7 @@ export default function AboutBox() {
             CONTACTO
           </h2>
           <p className="text-black text-xs md:text-base">
-            ligia@ligiaurroz.com
+            ligia.urroz@gmail.com
           </p>
         </div>
       </div>

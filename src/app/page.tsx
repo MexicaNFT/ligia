@@ -1,16 +1,19 @@
 import HeroSection from "./components/HeroSection";
-import UserFeedback from "./components/UserFeedback";
-import RecentBlogs from "./components/RecentBlogs";
 import AboutAuthor from "./components/AboutAuthor";
+import NovelaSection from "./components/NovelaSection";
+import CuentoSection from "./components/CuentoSection";
+import CronicaSection from "./components/CronicaSection";
+import EnsayoSection from "./components/EnsayoSection";
 
 export default function Home() {
   return (
-    <main className="relative">
+    <main>
       <HeroSection />
       <AboutAuthor />
-      {/* <UserFeedback />
-      <RecentBlogs /> */}
-      {/* <Novels /> */}
+      <NovelaSection />
+      <CuentoSection />
+      <CronicaSection />
+      <EnsayoSection />
     </main>
   );
 }
