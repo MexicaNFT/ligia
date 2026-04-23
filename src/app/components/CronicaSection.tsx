@@ -4,6 +4,7 @@ const featured = {
   imageSrc: "/image02.png",
   title: "Lo que el 20 se llevó",
   date: "2020 · Cal y Arena",
+  amazonUrl: "https://a.co/d/0deTgKv0",
   description:
     "Lo que el 20 se llevó trata sobre el acto de resistir. Entre la crónica, el ensayo personal y el reporte emocional, los testimonios reunidos son un vistazo al mundo interior propiciado por el confinamiento. La música, el cine, el sexo, los meseros — todo convive sin necesidad de ser sanitizado.",
 };
@@ -33,7 +34,7 @@ export default function CronicaSection() {
         {/* Two-column editorial layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           {/* Featured large */}
-          <div className="md:col-span-7 group cursor-pointer">
+          <a href={featured.amazonUrl} target="_blank" rel="noopener noreferrer" className="md:col-span-7 group cursor-pointer">
             <div className="aspect-video mb-8 overflow-hidden">
               <Image
                 src={featured.imageSrc}
@@ -52,7 +53,7 @@ export default function CronicaSection() {
             <p className="font-sans text-body-lg text-on-surface-variant leading-relaxed max-w-2xl">
               {featured.description}
             </p>
-          </div>
+          </a>
 
           {/* Secondary list */}
           <div className="md:col-span-5 border-l border-primary/10 pl-12 flex flex-col justify-between">
