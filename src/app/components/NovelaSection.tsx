@@ -9,6 +9,7 @@ type Novel = {
   title: string;
   year: string;
   synopsis: string;
+  amazonUrl: string;
   fullText: React.ReactNode;
 };
 
@@ -17,6 +18,7 @@ const novels: Novel[] = [
     imageSrc: "/image4.png",
     title: "La Muralla",
     year: "2009 · 2017 (edición bilingüe) · Narratio",
+    amazonUrl: "https://a.co/d/0dq1vB7R",
     synopsis:
       "Una historia de hombres y mujeres que buscan un lugar fuera de su terruño, que pretenden alcanzar un sueño que alguien más les ha contado. Vista desde la nostalgia por la tierra dejada atrás y el sentimiento de no pertenecer a ninguna parte.",
     fullText: (
@@ -61,6 +63,7 @@ const novels: Novel[] = [
     imageSrc: "/img1.png",
     title: "Somoza",
     year: "2021 · Planeta",
+    amazonUrl: "https://a.co/d/08ijn6og",
     synopsis:
       "Novela histórica y de autoficción que narra los últimos años de la dictadura del General Anastasio Somoza Debayle. A los seis meses de su lanzamiento fue reimpresa. Disponible en formato digital y físico.",
     fullText: (
@@ -99,6 +102,7 @@ const novels: Novel[] = [
     imageSrc: "/por-mi-gran-culpa.png",
     title: "Por mi gran culpa",
     year: "2024 · Hachette Livre México",
+    amazonUrl: "https://a.co/d/0bodVezo",
     synopsis:
       "Un secreto soltado de sopetón por la abuela de Ligia: su trastatarabuelo fue un alto jerarca de la Iglesia que embarazó a una joven Josefa. Ligia tomó esa bestia de rumores y la transformó en una obra de ficción. Disponible en ebook y audiolibro.",
     fullText: (
@@ -233,6 +237,14 @@ export default function NovelaSection() {
                 </h3>
                 <div className="h-px w-16 bg-primary/20 mb-8" />
                 {selected.fullText}
+                <a
+                  href={selected.amazonUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-8 inline-block font-sans uppercase tracking-[0.1em] text-xs font-semibold text-on-surface border border-on-surface/20 px-6 py-3 hover:bg-on-surface hover:text-surface transition-colors"
+                >
+                  Comprar en Amazon
+                </a>
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@ const tales = [
     imageSrc: "/image7.png",
     title: "Narciso Negro",
     collection: "Mujeres de miedo que cuentan · Narratio, 2019",
+    amazonUrl: "https://a.co/d/0hKjDcg1",
     description:
       "Aborda el abuso psicológico dentro de la pareja. El narcisista se ama desde una pulsión irracional, sobaja y humilla al abusado, quien sufre y calla. Se aprovecha de sus puntos débiles y lo manipula de formas inéditas.",
   },
@@ -12,6 +13,7 @@ const tales = [
     imageSrc: "/image5.png",
     title: "Viajes Oníricos",
     collection: "Once mujeres que cuentan erotismo · Narratio, 2018",
+    amazonUrl: "https://a.co/d/03D8OP3H",
     description:
       "Basado en el mito de Eros y Psique. Alma es una periodista que escribe sobre música. Ella y Ed, guitarrista de rock, se enamoran más allá de la realidad, en viajes que cruzan la frontera entre los sueños y el deseo.",
   },
@@ -19,6 +21,7 @@ const tales = [
     imageSrc: "/image9.png",
     title: "Diario de un Aislamiento",
     collection: "Mujeres que cuentan secretos · Narratio, 2020",
+    amazonUrl: "https://a.co/d/06zGzOQI",
     description:
       "Escrito al iniciar la pandemia de Covid-19. La protagonista narra en su diario el dolor, el insomnio, la angustia del encierro y las fobias de no tocar para no ser infectada.",
   },
@@ -26,6 +29,7 @@ const tales = [
     imageSrc: "/image10.png",
     title: "Por qué quise ser invisible",
     collection: "Abusado · Rosa Ma. Porrúa Ediciones, 2020",
+    amazonUrl: "https://a.co/d/09gBkoaL",
     description:
       "Cuento juvenil sobre el bullying y el abuso en redes sociales. María Fernanda es acosada por sus compañeros y se refugia y sale adelante a través de la música y el amor de su familia.",
   },
@@ -49,8 +53,11 @@ export default function CuentoSection() {
         {/* Story list */}
         <div className="space-y-0">
           {tales.map((tale) => (
-            <div
+            <a
               key={tale.title}
+              href={tale.amazonUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="group border-b border-outline-variant pb-10 pt-10 first:pt-0 flex flex-col md:flex-row md:items-start gap-8 hover:bg-surface-container-low transition-colors px-4 -mx-4"
             >
               {/* Thumbnail */}
@@ -76,7 +83,7 @@ export default function CuentoSection() {
                   {tale.description}
                 </p>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
