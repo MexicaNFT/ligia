@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# Creates a brand-new Google Cloud / Firebase project for ligiaurroz.com:
+# Firebase Hosting site, Cloud DNS zone, and keyless GitHub Actions deploys
+# (Workload Identity Federation). Run it in Google Cloud Shell
+# (https://shell.cloud.google.com) signed in as afolch@mexicanft.com.mx.
+#
+# Usage:
+#   PROJECT_ID=ligiaurroz-mx BILLING_ACCOUNT=XXXXXX-XXXXXX-XXXXXX \
+#     bash scripts/setup-new-firebase-project.sh
+#
+# Optional: ORG_ID=<numeric org id> to create the project inside the
+# mexicanft.com.mx organization.
+set -euo pipefail
+
+: "${PROJECT_ID:?Set PROJECT_ID (globally unique, e.g. ligiaurroz-mx)}"
+: "${BILLING_ACCOUNT:?Set BILLING_ACCOUNT (see: gcloud billing accounts list)}"
+GITHUB_REPO="${GITHUB_REPO:-MexicaNFT/ligia}"
+DOMAIN="${DOMAIN:-ligiaurroz.com}"
+DNS_ZONE="${DNS_ZONE:-ligiaurroz-com}"
+SA_NAME="firebase-github-deploy"
+POOL="github-pool"
+PROVIDER="github-provider"
+
+echo "==> 1/6 Creating project ${PROJECT_ID}"
+if ! gcloud projects describe "$PROJECT_ID" >/dev/null 2>&1; then
+  gcloud projects create "$PROJECT_ID" --name="Ligia Urroz" \
+    ${ORG_ID:+--organization="$ORG_ID"}
+fi
+gcloud config set project "$PROJECT_ID"
+gcloud billing projects link "$PROJECT_ID" --billing-account="$BILLING_ACCOUNT"
+PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
+
+echo "==> 2/6 Enabling APIs"
+gcloud services enable \
+  firebase.googleapis.com firebasehosting.googleapis.com dns.googleapis.com \
+  iam.googleapis.com iamcredentials.googleapis.com sts.googleapis.com \
+  cloudresourcemanager.googleapis.com
+
+echo "==> 3/6 Adding Firebase and creating the Hosting site"
+npx --yes firebase-tools projects:addfirebase "$PROJECT_ID" || \
+  echo "   (Firebase already enabled on this project, continuing)"
+npx --yes firebase-tools hosting:sites:create "$PROJECT_ID" --project "$PROJECT_ID" || \
+  echo "   (Hosting site ${PROJECT_ID} already exists, continuing)"
+
+echo "==> 4/6 Creating Cloud DNS zone ${DNS_ZONE} for ${DOMAIN}"
+if ! gcloud dns managed-zones describe "$DNS_ZONE" >/dev/null 2>&1; then
+  gcloud dns managed-zones create "$DNS_ZONE" \
+    --dns-name="${DOMAIN}." --description="${DOMAIN} (Firebase Hosting)"
+fi
+
+echo "==> 5/6 Deploy service account"
+SA_EMAIL="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
+if ! gcloud iam service-accounts describe "$SA_EMAIL" >/dev/null 2>&1; then
+  gcloud iam service-accounts create "$SA_NAME" --display-name="GitHub Actions Firebase deploy"
+fi
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:${SA_EMAIL}" --role="roles/firebasehosting.admin" \
+  --condition=None >/dev/null
+
+echo "==> 6/6 Workload Identity Federation for ${GITHUB_REPO}"
+if ! gcloud iam workload-identity-pools describe "$POOL" --location=global >/dev/null 2>&1; then
+  gcloud iam workload-identity-pools create "$POOL" --location=global \
+    --display-name="GitHub Actions"
+fi
+if ! gcloud iam workload-identity-pools providers describe "$PROVIDER" \
+    --location=global --workload-identity-pool="$POOL" >/dev/null 2>&1; then
+  gcloud iam workload-identity-pools providers create-oidc "$PROVIDER" \
+    --location=global --workload-identity-pool="$POOL" \
+    --display-name="GitHub OIDC" \
+    --issuer-uri="https://token.actions.githubusercontent.com" \
+    --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
+    --attribute-condition="assertion.repository=='${GITHUB_REPO}'"
+fi
+gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${POOL}/attribute.repository/${GITHUB_REPO}" \
+  >/dev/null
+
+cat <<SUMMARY
+
+================ DONE — send these values back ================
+PROJECT_ID:      ${PROJECT_ID}
+PROJECT_NUMBER:  ${PROJECT_NUMBER}
+WIF provider:    projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${POOL}/providers/${PROVIDER}
+Service account: ${SA_EMAIL}
+Hosting URL:     https://${PROJECT_ID}.web.app
+
+Nameservers for ${DOMAIN} (set these at Squarespace later):
+$(gcloud dns managed-zones describe "$DNS_ZONE" --format='value(nameServers)' | tr ';' '\n')
+================================================================
+SUMMARY
