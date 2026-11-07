@@ -1,5 +1,5 @@
 # Project Report — ligiaurroz.com
-**Date:** April 23, 2026
+**Date:** April 23, 2026 (infrastructure updated November 7, 2026: moved to Firebase project `ligia-urroz`)
 
 ---
 
@@ -12,7 +12,7 @@
 | `next.config.ts` | Added `output: "export"` (static HTML export) + `images.unoptimized: true` (required for static hosting — Next.js image optimization needs a server) |
 | `package.json` | Added `"deploy"` script (kept for local use, not used in CI) |
 | `firebase.json` | Created — Firebase Hosting config, public dir set to `out/` |
-| `.firebaserc` | Created — links repo to Firebase project `ligiaurroz` |
+| `.firebaserc` | Created — links repo to Firebase project `ligia-urroz` (originally `ligiaurroz`) |
 | `.gitignore` | Added `.firebase/` (local deploy cache) |
 | `.github/workflows/firebase-deploy.yml` | Created — GitHub Actions CI/CD pipeline |
 | `src/app/components/NovelaSection.tsx` | Added `amazonUrl` field + "Comprar en Amazon" button in detail modal |
@@ -40,15 +40,15 @@
 
 | Component | Provider | Details |
 |---|---|---|
-| Domain registrar | Squarespace | `ligiaurroz.com` — nameservers updated to Google Cloud DNS |
-| DNS zone | Google Cloud DNS | Zone `ligiaurroz-com` in project `ligiaurroz` |
-| DNS records | Google Cloud DNS | A → `199.36.158.100` (Firebase), CNAME `www` → `ligiaurroz.web.app`, 2× Firebase verification CNAMEs |
+| Domain registrar | Squarespace | `ligiaurroz.com` |
+| DNS | Squarespace | Squarespace's own nameservers (Google Cloud DNS is no longer used) |
+| DNS records | Squarespace | Firebase Hosting records for `@` and `www` (as shown in Firebase Console → Hosting → Custom domains), Google Workspace mail (MX, SPF, DKIM), Google verification CNAMEs |
 
 ### Hosting
 
 | Component | Provider | Details |
 |---|---|---|
-| Static hosting | Firebase Hosting | Project `ligiaurroz`, site `ligiaurroz.web.app` |
+| Static hosting | Firebase Hosting | Project `ligia-urroz` (number `127833374564`, owned by `afolch@mexicanft.com.mx`), site `ligia-urroz.web.app` |
 | Custom domains | Firebase Hosting | `ligiaurroz.com` + `www.ligiaurroz.com` |
 | SSL certificate | Firebase (auto) | Let's Encrypt, auto-renewed |
 | CDN | Firebase / Google CDN | Global edge caching included |
@@ -61,7 +61,8 @@
 | Auth | Keyless Workload Identity Federation (no stored secrets) |
 | WIF Pool | `github-pool` — scoped to `MexicaNFT/ligia` only |
 | WIF Provider | `github-provider` — OIDC, `https://token.actions.githubusercontent.com` |
-| Service account | `firebase-github-deploy@ligiaurroz.iam.gserviceaccount.com` |
+| Service account | `firebase-github-deploy@ligia-urroz.iam.gserviceaccount.com` |
+| Setup script | `scripts/setup-new-firebase-project.sh` (re-runnable; skips what exists) |
 | SA roles | `roles/firebasehosting.admin` + `roles/iam.workloadIdentityUser` |
 | Build | Node 20, `npm ci` → `next build` → `out/` (57 static files, 6 routes) |
 
@@ -86,21 +87,11 @@
 | Review GitHub Actions run logs | After each merge | GitHub → Actions tab |
 | Check Firebase Hosting usage | Monthly | Firebase Console → Hosting |
 | Dependabot alerts | As they appear | GitHub Security tab |
-| DNS record changes (if needed) | On demand | `gcloud dns record-sets` or GCP Console |
+| DNS record changes (if needed) | On demand | Squarespace → Domains → ligiaurroz.com → DNS |
 
-### Adding email in the future (`@ligiaurroz.com`)
+### Email (`@ligiaurroz.com`)
 
-Add MX + SPF records to the Google Cloud DNS zone — no AWS involvement required:
-
-```bash
-gcloud dns record-sets create ligiaurroz.com. \
-  --zone=ligiaurroz-com --type=MX --ttl=3600 \
-  --rrdatas="1 aspmx.l.google.com.,5 alt1.aspmx.l.google.com.,5 alt2.aspmx.l.google.com.,10 alt3.aspmx.l.google.com.,10 alt4.aspmx.l.google.com."
-
-gcloud dns record-sets create ligiaurroz.com. \
-  --zone=ligiaurroz-com --type=TXT --ttl=3600 \
-  --rrdatas='"v=spf1 include:_spf.google.com ~all"'
-```
+Google Workspace mail is already configured: MX, SPF (`v=spf1 include:_spf.google.com ~all`) and DKIM (`google._domainkey`) records live in Squarespace DNS. Keep them when changing website records.
 
 ---
 
@@ -111,9 +102,8 @@ gcloud dns record-sets create ligiaurroz.com. \
 | Service | Free tier | Expected cost |
 |---|---|---|
 | Firebase Hosting | 10 GB storage, 360 MB/day transfer | **$0/month** (static site well within limits) |
-| Google Cloud DNS | First 25 zones: $0.20/zone/month + $0.40/million queries | ~**$0.25/month** |
 | IAM / WIF | Free | $0 |
-| **GCP total** | | ~**$0.25/month** |
+| **GCP total** | | **$0/month** (no billing account needed) |
 
 ### GitHub
 
@@ -138,8 +128,8 @@ gcloud dns record-sets create ligiaurroz.com. \
 
 | Provider | Monthly | Annual |
 |---|---|---|
-| Google Cloud | ~$0.25 | ~$3 |
+| Google Cloud | $0 | $0 |
 | GitHub | $0 | $0 |
 | Squarespace (domain) | ~$1.67 | ~$20 |
 | AWS | $0 | $0 |
-| **Total** | **~$2/month** | **~$23/year** |
+| **Total** | **~$1.67/month** | **~$20/year** |
