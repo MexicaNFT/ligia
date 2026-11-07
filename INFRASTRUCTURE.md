@@ -42,7 +42,7 @@
 |---|---|---|
 | Domain registrar | Squarespace | `ligiaurroz.com` |
 | DNS | Squarespace | Squarespace's own nameservers (Google Cloud DNS is no longer used) |
-| DNS records | Squarespace | Firebase Hosting records for `@` and `www` (as shown in Firebase Console → Hosting → Custom domains), Google Workspace mail (MX, SPF, DKIM), Google verification CNAMEs |
+| DNS records | Squarespace | `A @ → 199.36.158.100`, `TXT @ → hosting-site=ligia-urroz`, `CNAME www → ligia-urroz.web.app`, plus Squarespace's `_domainconnect` CNAME |
 
 ### Hosting
 
@@ -91,7 +91,7 @@
 
 ### Email (`@ligiaurroz.com`)
 
-Google Workspace mail is already configured: MX, SPF (`v=spf1 include:_spf.google.com ~all`) and DKIM (`google._domainkey`) records live in Squarespace DNS. Keep them when changing website records.
+No email is set up for the domain (no MX records). To add Google Workspace later: Squarespace → DNS → Add Preset → Google Workspace (MX + SPF), then generate DKIM in the Workspace admin console. It doesn't affect the website records.
 
 ---
 
