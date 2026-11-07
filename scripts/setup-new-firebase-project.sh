@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 # Creates a brand-new Google Cloud / Firebase project for ligiaurroz.com:
-# Firebase Hosting site, Cloud DNS zone, and keyless GitHub Actions deploys
-# (Workload Identity Federation). Run it in Google Cloud Shell
-# (https://shell.cloud.google.com) signed in as afolch@mexicanft.com.mx.
+# Firebase Hosting site and keyless GitHub Actions deploys (Workload Identity
+# Federation). Run it in Google Cloud Shell (https://shell.cloud.google.com)
+# signed in as afolch@mexicanft.com.mx.
 #
 # Usage:
 #   PROJECT_ID=ligia-urroz bash scripts/setup-new-firebase-project.sh
 #
 # It also works on a project that was already created in the Firebase
-# console: steps that already exist are skipped. BILLING_ACCOUNT is only
-# needed if the project has no billing account yet (Cloud DNS requires one).
+# console: steps that already exist are skipped. No billing account is
+# needed: DNS for the domain stays at Squarespace by default.
+#
+# Optional: CREATE_DNS_ZONE=1 to also create a Cloud DNS zone for the domain
+# (needs billing; pass BILLING_ACCOUNT=<id> if the project has none).
 #
 # The new project lives in a different Google account from the old
 # `ligiaurroz` project. The script refuses to run unless gcloud is signed in
@@ -36,6 +39,7 @@ if [ "$PROJECT_ID" = "ligiaurroz" ]; then
 fi
 echo "==> Signed in as ${ACTIVE_ACCOUNT}"
 BILLING_ACCOUNT="${BILLING_ACCOUNT:-}"
+CREATE_DNS_ZONE="${CREATE_DNS_ZONE:-0}"
 GITHUB_REPO="${GITHUB_REPO:-MexicaNFT/ligia}"
 DOMAIN="${DOMAIN:-ligiaurroz.com}"
 DNS_ZONE="${DNS_ZONE:-ligiaurroz-com}"
@@ -51,7 +55,8 @@ fi
 gcloud config set project "$PROJECT_ID"
 if [ -n "$BILLING_ACCOUNT" ]; then
   gcloud billing projects link "$PROJECT_ID" --billing-account="$BILLING_ACCOUNT"
-elif [ "$(gcloud billing projects describe "$PROJECT_ID" --format='value(billingEnabled)')" != "True" ]; then
+elif [ "$CREATE_DNS_ZONE" = "1" ] && \
+     [ "$(gcloud billing projects describe "$PROJECT_ID" --format='value(billingEnabled)')" != "True" ]; then
   echo "ERROR: ${PROJECT_ID} has no billing account (Cloud DNS needs one)." >&2
   echo "Re-run with BILLING_ACCOUNT=<id> (see: gcloud billing accounts list)." >&2
   exit 1
@@ -60,9 +65,12 @@ PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(project
 
 echo "==> 2/6 Enabling APIs"
 gcloud services enable \
-  firebase.googleapis.com firebasehosting.googleapis.com dns.googleapis.com \
+  firebase.googleapis.com firebasehosting.googleapis.com \
   iam.googleapis.com iamcredentials.googleapis.com sts.googleapis.com \
   cloudresourcemanager.googleapis.com
+if [ "$CREATE_DNS_ZONE" = "1" ]; then
+  gcloud services enable dns.googleapis.com
+fi
 
 echo "==> 3/6 Adding Firebase and creating the Hosting site"
 npx --yes firebase-tools projects:addfirebase "$PROJECT_ID" || \
@@ -70,10 +78,16 @@ npx --yes firebase-tools projects:addfirebase "$PROJECT_ID" || \
 npx --yes firebase-tools hosting:sites:create "$PROJECT_ID" --project "$PROJECT_ID" || \
   echo "   (Hosting site ${PROJECT_ID} already exists, continuing)"
 
-echo "==> 4/6 Creating Cloud DNS zone ${DNS_ZONE} for ${DOMAIN}"
-if ! gcloud dns managed-zones describe "$DNS_ZONE" >/dev/null 2>&1; then
-  gcloud dns managed-zones create "$DNS_ZONE" \
-    --dns-name="${DOMAIN}." --description="${DOMAIN} (Firebase Hosting)"
+if [ "$CREATE_DNS_ZONE" = "1" ]; then
+  echo "==> 4/6 Creating Cloud DNS zone ${DNS_ZONE} for ${DOMAIN}"
+  if ! gcloud dns managed-zones describe "$DNS_ZONE" >/dev/null 2>&1; then
+    gcloud dns managed-zones create "$DNS_ZONE" \
+      --dns-name="${DOMAIN}." --description="${DOMAIN} (Firebase Hosting)"
+  fi
+  NAMESERVERS="$(gcloud dns managed-zones describe "$DNS_ZONE" --format='value(nameServers)' | tr ';' '\n')"
+else
+  echo "==> 4/6 Skipping Cloud DNS (DNS for ${DOMAIN} stays at Squarespace)"
+  NAMESERVERS="(none: keep Squarespace's own nameservers)"
 fi
 
 echo "==> 5/6 Deploy service account"
@@ -113,7 +127,7 @@ WIF provider:    projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPoo
 Service account: ${SA_EMAIL}
 Hosting URL:     https://${PROJECT_ID}.web.app
 
-Nameservers for ${DOMAIN} (set these at Squarespace later):
-$(gcloud dns managed-zones describe "$DNS_ZONE" --format='value(nameServers)' | tr ';' '\n')
+Nameservers for ${DOMAIN}:
+${NAMESERVERS}
 ================================================================
 SUMMARY
