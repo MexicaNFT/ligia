@@ -63,7 +63,7 @@
 | WIF Provider | `github-provider` — OIDC, `https://token.actions.githubusercontent.com` |
 | Service account | `firebase-github-deploy@ligia-urroz.iam.gserviceaccount.com` |
 | Setup script | `scripts/setup-new-firebase-project.sh` (re-runnable; skips what exists) |
-| SA roles | `roles/firebasehosting.admin` + `roles/iam.workloadIdentityUser` |
+| SA roles | `roles/firebasehosting.admin` + `roles/serviceusage.serviceUsageConsumer` + `roles/iam.workloadIdentityUser` |
 | Build | Node 20, `npm ci` → `next build` → `out/` (57 static files, 6 routes) |
 
 ### Decommissioned (AWS)

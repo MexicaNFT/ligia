@@ -95,9 +95,13 @@ SA_EMAIL="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 if ! gcloud iam service-accounts describe "$SA_EMAIL" >/dev/null 2>&1; then
   gcloud iam service-accounts create "$SA_NAME" --display-name="GitHub Actions Firebase deploy"
 fi
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-  --member="serviceAccount:${SA_EMAIL}" --role="roles/firebasehosting.admin" \
-  --condition=None >/dev/null
+# firebasehosting.admin to deploy; serviceUsageConsumer so firebase-tools can
+# check that the Hosting API is enabled (otherwise: 403 on serviceusage).
+for ROLE in roles/firebasehosting.admin roles/serviceusage.serviceUsageConsumer; do
+  gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:${SA_EMAIL}" --role="$ROLE" \
+    --condition=None >/dev/null
+done
 
 echo "==> 6/6 Workload Identity Federation for ${GITHUB_REPO}"
 if ! gcloud iam workload-identity-pools describe "$POOL" --location=global >/dev/null 2>&1; then
