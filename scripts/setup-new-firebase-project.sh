@@ -5,15 +5,18 @@
 # (https://shell.cloud.google.com) signed in as afolch@mexicanft.com.mx.
 #
 # Usage:
-#   PROJECT_ID=ligiaurroz-mx BILLING_ACCOUNT=XXXXXX-XXXXXX-XXXXXX \
-#     bash scripts/setup-new-firebase-project.sh
+#   PROJECT_ID=ligia-urroz bash scripts/setup-new-firebase-project.sh
+#
+# It also works on a project that was already created in the Firebase
+# console: steps that already exist are skipped. BILLING_ACCOUNT is only
+# needed if the project has no billing account yet (Cloud DNS requires one).
 #
 # Optional: ORG_ID=<numeric org id> to create the project inside the
 # mexicanft.com.mx organization.
 set -euo pipefail
 
-: "${PROJECT_ID:?Set PROJECT_ID (globally unique, e.g. ligiaurroz-mx)}"
-: "${BILLING_ACCOUNT:?Set BILLING_ACCOUNT (see: gcloud billing accounts list)}"
+: "${PROJECT_ID:?Set PROJECT_ID (e.g. ligia-urroz)}"
+BILLING_ACCOUNT="${BILLING_ACCOUNT:-}"
 GITHUB_REPO="${GITHUB_REPO:-MexicaNFT/ligia}"
 DOMAIN="${DOMAIN:-ligiaurroz.com}"
 DNS_ZONE="${DNS_ZONE:-ligiaurroz-com}"
@@ -27,7 +30,13 @@ if ! gcloud projects describe "$PROJECT_ID" >/dev/null 2>&1; then
     ${ORG_ID:+--organization="$ORG_ID"}
 fi
 gcloud config set project "$PROJECT_ID"
-gcloud billing projects link "$PROJECT_ID" --billing-account="$BILLING_ACCOUNT"
+if [ -n "$BILLING_ACCOUNT" ]; then
+  gcloud billing projects link "$PROJECT_ID" --billing-account="$BILLING_ACCOUNT"
+elif [ "$(gcloud billing projects describe "$PROJECT_ID" --format='value(billingEnabled)')" != "True" ]; then
+  echo "ERROR: ${PROJECT_ID} has no billing account (Cloud DNS needs one)." >&2
+  echo "Re-run with BILLING_ACCOUNT=<id> (see: gcloud billing accounts list)." >&2
+  exit 1
+fi
 PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
 
 echo "==> 2/6 Enabling APIs"
