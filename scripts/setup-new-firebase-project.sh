@@ -11,11 +11,30 @@
 # console: steps that already exist are skipped. BILLING_ACCOUNT is only
 # needed if the project has no billing account yet (Cloud DNS requires one).
 #
+# The new project lives in a different Google account from the old
+# `ligiaurroz` project. The script refuses to run unless gcloud is signed in
+# as EXPECTED_ACCOUNT, so it can't touch (or create projects in) the old
+# account by mistake.
+#
 # Optional: ORG_ID=<numeric org id> to create the project inside the
 # mexicanft.com.mx organization.
 set -euo pipefail
 
 : "${PROJECT_ID:?Set PROJECT_ID (e.g. ligia-urroz)}"
+EXPECTED_ACCOUNT="${EXPECTED_ACCOUNT:-afolch@mexicanft.com.mx}"
+
+ACTIVE_ACCOUNT="$(gcloud config get-value account 2>/dev/null)"
+if [ "$ACTIVE_ACCOUNT" != "$EXPECTED_ACCOUNT" ]; then
+  echo "ERROR: gcloud is signed in as '${ACTIVE_ACCOUNT}', expected ${EXPECTED_ACCOUNT}." >&2
+  echo "Open Cloud Shell from a browser profile signed in as ${EXPECTED_ACCOUNT}," >&2
+  echo "or run: gcloud auth login ${EXPECTED_ACCOUNT}" >&2
+  exit 1
+fi
+if [ "$PROJECT_ID" = "ligiaurroz" ]; then
+  echo "ERROR: ligiaurroz is the OLD project (other account). Use PROJECT_ID=ligia-urroz." >&2
+  exit 1
+fi
+echo "==> Signed in as ${ACTIVE_ACCOUNT}"
 BILLING_ACCOUNT="${BILLING_ACCOUNT:-}"
 GITHUB_REPO="${GITHUB_REPO:-MexicaNFT/ligia}"
 DOMAIN="${DOMAIN:-ligiaurroz.com}"
